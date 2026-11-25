@@ -1,0 +1,211 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   SOVEREIGN IDENTITY — WEALTH NOIR TOKENS
+   Private-banking black, champagne letterforms. This file is the single
+   source of truth for colour, type, spacing, radius and easing. A raw hex
+   anywhere else in src/ fails the build (scripts/check-tokens.mjs); the TS
+   mirror for surfaces that cannot read CSS is src/lib/tokens.ts.
+
+   The palette is the six Wealth Noir values and nothing else. The default
+   Tailwind palette is cleared below so a class like text-zinc-400 does not
+   exist to be reached for: an off-palette colour is a compile-time absence,
+   not a review comment.
+
+   Divergences from written canon, recorded not absorbed:
+     Layer 7 names silver; this system is champagne (#E9E3D4 / #8C8575).
+     The WS3 spec names Cinzel; the Operator has ruled Cormorant Garamond.
+   Both sit inside open Founder items 39 and 40. The inversion is two lines:
+   this file and layout.tsx.
+   --------------------------------------------------------------------------- */
+
+@theme {
+  --color-*: initial;
+  --color-primary: #e9e3d4;    /* headlines and core text          15.47:1 */
+  --color-secondary: #8c8575;  /* borders, captions, metadata       5.40:1 */
+  --color-tertiary: #c9a15a;   /* THE accent. One action per view.  8.23:1 */
+  --color-neutral: #0a0a09;    /* the page foundation                      */
+  --color-surface: #131211;    /* raised surfaces                          */
+  --color-on-primary: #0a0a09; /* text on tertiary fills                   */
+
+  /* Cormorant Garamond replaces Playfair (Operator ruling, 28 Aug). It runs
+     optically lighter, so display sits at weight 600 and ~1.08x the spec's
+     nominal sizes; see the heading rules below for the compensation. */
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-body: var(--font-inter), Inter, system-ui, sans-serif;
+
+  /* Type scale. clamp() throughout — display type never jumps at a
+     breakpoint. Nominal spec: display 4.5rem, h1 2.5rem, body 0.95rem,
+     label 0.72rem; display and h1 carry the Cormorant compensation. */
+  --text-display: clamp(3.1rem, 2.02rem + 4.6vw, 5rem);
+  --text-display--line-height: 1.03;
+  --text-display--letter-spacing: -0.015em;
+  --text-h1: clamp(2.35rem, 1.98rem + 1.6vw, 2.75rem);
+  --text-h1--line-height: 1.06;
+  --text-h1--letter-spacing: -0.012em;
+  --text-h2: clamp(1.7rem, 1.5rem + 0.9vw, 2rem);
+  --text-h2--line-height: 1.12;
+  --text-h2--letter-spacing: -0.008em;
+  --text-h3: 1.35rem;
+  --text-h3--line-height: 1.25;
+  --text-lead: 1.16rem;
+  --text-lead--line-height: 1.6;
+  --text-body: 0.95rem;
+  --text-body--line-height: 1.65;
+  --text-small: 0.8rem;
+  --text-small--line-height: 1.6;
+  --text-label: 0.72rem;
+  --text-label--line-height: 1.4;
+
+  /* Near-square is the point. Nothing rounds past 3px. */
+  --radius-*: initial;
+  --radius-sm: 1px;
+  --radius-md: 2px;
+  --radius-lg: 3px;
+
+  /* Component spacing runs on the default 4px base. Section rhythm gets its
+     own tokens — the spec's sm/md/lg are component-level and far too tight
+     for layout, so the scale is extended rather than violated. */
+  --spacing: 0.25rem;
+  --spacing-section: clamp(5.5rem, 3.6rem + 8vw, 11.5rem);
+  --spacing-band: clamp(4rem, 2.9rem + 4.6vw, 7rem);
+
+  /* Motion. Weighted, slow, inevitable. The JS mirror is src/lib/motion.ts. */
+  --ease-signature: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 150ms;
+  --duration-base: 600ms;
+  --duration-slow: 800ms;
+
+  --container-prose: 66ch;
+}
+
+/* ---------------------------------------------------------------------------
+   BASE
+   --------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-neutral);
+  /* Body ink: primary at 81% over the ground. Computed #bfbaad, 10.23:1 —
+     verified by scripts/check-contrast.mjs, which recomputes this blend. */
+  color: color-mix(in srgb, var(--color-primary) 81%, var(--color-neutral));
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  color: var(--color-primary);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+strong, b {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Correct typographic characters are part of the register: real em dashes
+   and proper quotes come from the copy source; nothing here re-renders them. */
+
+/* Custom classes live in the components layer: utility classes are in the
+   later utilities layer, so a `text-on-primary` beside `.label` wins. An
+   unlayered class would silently beat every utility — which is exactly the
+   bug that once put secondary-on-gold (1.52:1) text on the accent buttons. */
+@layer components {
+  /* The label. Uppercase Inter, tracked open. The one place tracking opens. */
+  .label {
+    font-family: var(--font-body);
+    font-size: var(--text-label);
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+  }
+
+  /* Serif italic voice, for the audience quotations the copy carries. */
+  .voice {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+  }
+}
+
+::selection {
+  background: var(--color-primary);
+  color: var(--color-neutral);
+}
+
+/* Focus is always visible. The ring is champagne, not gold: the accent
+   budget belongs to the one action per view, and a focus ring that follows
+   the keyboard would put gold on every element in turn. 15.47:1 clears the
+   3:1 non-text minimum with room. */
+:focus-visible {
+  outline: 1px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+/* Hairlines are secondary at low alpha. A true grey next to warm neutrals
+   reads as dirt; these stay warm because the base token is warm. */
+@layer components {
+  .rule {
+    border-color: color-mix(in srgb, var(--color-secondary) 28%, transparent);
+  }
+  .rule-strong {
+    border-color: color-mix(in srgb, var(--color-secondary) 48%, transparent);
+  }
+}
+
+/* Reduced motion: content at final state, immediately. The JS layer makes
+   the same promise through useReducedMotion in src/lib/motion.ts; this
+   covers every CSS transition and animation beneath it. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   LOAD SEQUENCES — pure CSS
+   Entrance choreography for above-the-fold content runs on CSS, not on the
+   motion library: a hydration-gated animation re-paints the largest element
+   after React boots, which on a throttled phone pushes LCP past its budget.
+   CSS starts at first paint. `backwards` holds the from-state through the
+   delay; the reduced-motion block above zeroes all of it to final state.
+   Scroll-triggered reveals below the fold remain the motion library's job.
+   --------------------------------------------------------------------------- */
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(14px); }
+}
+@keyframes word-up {
+  from { transform: translateY(112%); }
+}
+@keyframes draw-x {
+  from { transform: scaleX(0); }
+}
+
+@layer components {
+  .anim-rise { animation: rise-in var(--duration-base) var(--ease-signature) backwards; }
+  .anim-word { animation: word-up 0.9s var(--ease-signature) backwards; }
+  .anim-draw {
+    transform-origin: left;
+    animation: draw-x var(--duration-slow) var(--ease-signature) backwards;
+  }
+}
